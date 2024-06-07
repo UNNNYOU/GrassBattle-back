@@ -9,7 +9,7 @@ services:
     name: GithubBattle
     env: ruby
     region: singapore
-    plan: starter
+    plan: free
     buildCommand: "./bin/render-build.sh"
     startCommand: "bundle exec puma -C config/puma.rb"
     envVars:
