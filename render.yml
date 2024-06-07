@@ -1,6 +1,6 @@
 databases:
   - name: GithubBattle_DB
-    databaseName: githubbattle_db
+    databaseName: githubbattle
     user: GithubBattle
     region: singapore
 
