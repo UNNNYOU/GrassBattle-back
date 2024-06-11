@@ -38,7 +38,7 @@ gem 'rack-cors'
 
 # 認証系
 gem 'omniauth'
-gem "omniauth-rails_csrf_protection"
+gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-github'
 
 # 環境変数
