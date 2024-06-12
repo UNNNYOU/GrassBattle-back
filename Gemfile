@@ -40,6 +40,7 @@ gem 'rack-cors'
 gem 'omniauth'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-github'
+gem 'jwt'
 
 # 環境変数
 gem 'dotenv-rails'
