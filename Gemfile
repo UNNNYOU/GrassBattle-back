@@ -37,9 +37,10 @@ gem 'bootsnap', require: false
 gem 'rack-cors'
 
 # 認証系
+gem 'jwt'
 gem 'omniauth'
-gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-github'
+gem 'omniauth-rails_csrf_protection'
 
 # 環境変数
 gem 'dotenv-rails'
