@@ -1,28 +1,43 @@
 class SessionsController < ApplicationController
+  skip_before_action :authenticate, only: [:create]
+
   def create
+    # githubから情報を取得
     user_info = request.env['omniauth.auth']
+    raise 'GitHub情報の取得に失敗しました' unless user_info
 
+    # ユーザー情報を取得
     uid_info = user_info['uid']
-    provider_info = user_info['provider']
     github_id_info = user_info['info']['nickname']
-    token_info = token_generator(uid_info, provider_info)
+    token_info = encode_access_token(uid_info)
 
-    user_auth = UserAuthentications.find_by(uid: uid_info, provider: provider_info)
+    # ユーザー情報が存在するか確認
+    user_auth = UserAuthentication.find_by(uid: uid_info)
 
     if user_auth
-      redirect_to "#{ENV['FRONT_URL']}?token=#{user_auth.token}"
+      # ユーザー情報が存在する場合はトークンを返却
+      redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}"
     else
+      # ユーザー情報が存在しない場合はユーザー情報を作成してトークンを返却
       user = User.create(name: 'GRASS BATTLE MEMBER', github_id: github_id_info)
-      user_auth = UserAuthentications.create(user_id: user.id, uid: uid_info, provider: provider_info, token: token_info)
-      redirect_to "#{ENV['FRONT_URL']}?token=#{user_auth.token}"
+      UserAuthentication.create(user_id: user.id, uid: uid_info)
+      redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}"
     end
+  rescue StandardError => e
+    # エラーが発生した場合はログを出力してエラーを返却
+    Rails.logger.error("認証エラー: #{e.message}")
+    redirect_to "#{ENV['FRONT_URL']}?error=authentication_failed"
   end
 
-  private
-
-  def token_generator(uid_info, provider_info)
-    exp_info = Time.now.to_i + 24 * 3600
-    payload = { github_id: uid_info, provider: provider_info, exp: exp_info }
-    JWT.encode(payload, ENV['SECRET_KEY_BASE'], 'HS256')
+  def update
+    # トークンを再発行
+    access_token_info = encode_access_token(@current_user[:uid])
+    refresh_token_info = encode_refresh_token(@current_user[:uid])
+    # トークンを返却
+    render json: { access_token: access_token_info, refresh_token: refresh_token_info }, status: :ok
+  rescue StandardError => e
+    # エラーが発生した場合はログを出力してエラーを返却
+    Rails.logger.error("認証エラー: #{e.message}")
+    render json: { error: 'authentication_failed' }, status: :unauthorized
   end
 end
