@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_13_002708) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_15_050926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_002708) do
     t.index ["user_id"], name: "index_user_authentications_on_user_id"
   end
 
+  create_table "user_statuses", force: :cascade do |t|
+    t.integer "level", default: 1, null: false
+    t.integer "experience_points", default: 0, null: false
+    t.integer "week_contributions", default: 0, null: false
+    t.integer "temporal_contribution_data", default: 0, null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_statuses_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", default: "GRASS BATTLE MEMBER", null: false
     t.string "github_id", null: false
@@ -32,4 +43,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_002708) do
   end
 
   add_foreign_key "user_authentications", "users"
+  add_foreign_key "user_statuses", "users"
 end
