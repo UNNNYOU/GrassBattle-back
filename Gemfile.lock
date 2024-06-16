@@ -88,6 +88,11 @@ GEM
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
+    graphql (2.3.5)
+      base64
+    graphql-client (0.22.0)
+      activesupport (>= 3.0)
+      graphql (>= 1.13.0)
     hashie (5.0.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
@@ -221,6 +226,8 @@ DEPENDENCIES
   bootsnap
   debug
   dotenv-rails
+  graphql
+  graphql-client
   jwt
   omniauth
   omniauth-github
