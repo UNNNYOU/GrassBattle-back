@@ -49,6 +49,8 @@ gem 'dotenv-rails' # 環境変数を扱うためのgem
 gem 'graphql' # graphqlを使用するためのgem
 gem 'graphql-client' # graphqlにてデータを取得するためのgem
 
+# シリアライザー
+gem 'active_model_serializers' # シリアライザーを扱うためのgem
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
