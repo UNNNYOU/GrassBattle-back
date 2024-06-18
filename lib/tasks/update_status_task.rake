@@ -1,3 +1,5 @@
+require 'github_client'
+
 namespace :update_status_task do
   # 毎日、全ユーザーのステータスを更新する
   desc "初期データの作成"
@@ -34,7 +36,7 @@ namespace :update_status_task do
       temporal_contributions = all_contributions - oldest_date_contributions
 
       # ユーザーデータからlevelを取得
-      level = user.user_stauts.level
+      level = user.user_status.level
 
       # 経験値が10以上の場合、レベルアップする
       if experience_point_data >= 10
@@ -42,10 +44,10 @@ namespace :update_status_task do
           experience_point_data -= 10
           level += 1
         end
-        user.user_stauts.update!(level:, temporal_contribution_data: temporal_contributions,
+        user.user_status.update!(level:, temporal_contribution_data: temporal_contributions,
           experience_points: experience_point_data)
       else
-        user.user_stauts.update!(temporal_contribution_data: temporal_contributions,
+        user.user_status.update!(temporal_contribution_data: temporal_contributions,
           experience_points: experience_point_data)
       end
     end
@@ -67,7 +69,7 @@ namespace :update_status_task do
       next if contributions.blank?
 
       # ユーザーデータの更新
-      user.user_stauts.update!(week_contributions: contributions)
+      user.user_status.update!(week_contributions: contributions)
     end
   end
 
@@ -91,7 +93,7 @@ namespace :update_status_task do
       next if all_contributions.blank?
 
       # 経験値の計算
-      experience_point_data = all_contributions - user.user_stauts.temporal_contribution_data
+      experience_point_data = all_contributions - user.user_status.temporal_contribution_data
 
       # 次回の経験値の計算の際、前日のコントリビューション数を保存するためのデータ
       temporal_contributions = all_contributions - oldest_date_contributions
@@ -100,18 +102,18 @@ namespace :update_status_task do
       if experience_point_data > 0
 
         # ユーザーデータから経験値を取得し、加算する
-        experience_point_data += user.user_stauts.experience_points
+        experience_point_data += user.user_status.experience_points
 
         # ユーザーデータからlevelを取得
-        level_data = user.user_stauts.level
+        level_data = user.user_status.level
 
         # 経験値が10以上の場合、レベルアップする
         experience_point_data_temp = experience_point_data % 10
         level_data += (experience_point_data / 10).ceil
-        user.user_stauts.update!(level: level_data, temporal_contribution_data: temporal_contributions,
+        user.user_status.update!(level: level_data, temporal_contribution_data: temporal_contributions,
           experience_points: experience_point_data_temp)
       else
-        user.user_stauts.update!(temporal_contribution_data: temporal_contributions)
+        user.user_status.update!(temporal_contribution_data: temporal_contributions)
       end
     end
   end
