@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   skip_before_action :authenticate, only: [:create]
+  include CreateUserStatus
 
   def create
     # githubから情報を取得
@@ -21,7 +22,12 @@ class SessionsController < ApplicationController
       # ユーザー情報が存在しない場合はユーザー情報を作成してトークンを返却
       user = User.create(name: 'GRASS BATTLE MEMBER', github_id: github_id_info)
       UserAuthentication.create(user_id: user.id, uid: uid_info)
+
+      set_experience_points(user)
+      set_contributions(user)
+
       redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}", allow_other_host: true
+
     end
   rescue StandardError => e
     # エラーが発生した場合はログを出力してエラーを返却
@@ -31,8 +37,8 @@ class SessionsController < ApplicationController
 
   def update
     # トークンを再発行
-    access_token_info = encode_access_token(@current_user[:uid])
-    refresh_token_info = encode_refresh_token(@current_user[:uid])
+    access_token_info = encode_access_token(@current_user.user_authentication[:uid])
+    refresh_token_info = encode_refresh_token(@current_user.user_authentication[:uid])
     # トークンを返却
     render json: { access_token: access_token_info, refresh_token: refresh_token_info }, status: :ok
   rescue StandardError => e

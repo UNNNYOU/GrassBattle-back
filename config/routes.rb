@@ -3,7 +3,13 @@ Rails.application.routes.draw do
   # githubからのリダイレクトを受け取るためのルーティング
   get '/auth/:provider/callback', to: 'sessions#create'
   post '/auth/update', to: 'sessions#update'
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  namespace :api do
+    namespace :v1 do
+      resources :users do
+        collection do
+          get :mypage
+        end
+      end
+    end
+  end
 end

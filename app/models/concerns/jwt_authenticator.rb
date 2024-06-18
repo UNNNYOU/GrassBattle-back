@@ -9,10 +9,14 @@ module JwtAuthenticator
     encoded_token = authorization_header.split('Bearer ').last
     raise UnableAuthorizationError.new('無効な認証形式です。') if encoded_token.blank?
 
+    logger.debug "encoded_token: #{encoded_token}"
+
     # トークンを復号化
     decoded_token_payload = decode(encoded_token)
 
-    @current_user = UserAuthentication.find_by(uid: decoded_token_payload["uid"])
+    logger.debug "decoded_token_payload: #{decoded_token_payload}"
+
+    @current_user = UserAuthentication.find_by(uid: decoded_token_payload["uid"]).user
 
     raise UnableAuthorizationError.new('認証できません。') if @current_user.blank?
 

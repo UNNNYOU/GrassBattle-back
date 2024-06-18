@@ -37,13 +37,20 @@ gem 'bootsnap', require: false
 gem 'rack-cors'
 
 # 認証系
-gem 'jwt'
-gem 'omniauth'
-gem 'omniauth-github'
-gem 'omniauth-rails_csrf_protection'
+gem 'jwt' # JSON Web Tokenを扱うためのgem
+gem 'omniauth' # 認証を行うためのgem
+gem 'omniauth-github' # GitHub認証を行うためのgem
+gem 'omniauth-rails_csrf_protection' # CSRF対策を行うためのgem
 
 # 環境変数
-gem 'dotenv-rails'
+gem 'dotenv-rails' # 環境変数を扱うためのgem
+
+# GraphQL
+gem 'graphql' # graphqlを使用するためのgem
+gem 'graphql-client' # graphqlにてデータを取得するためのgem
+
+# シリアライザー
+gem 'active_model_serializers' # シリアライザーを扱うためのgem
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
