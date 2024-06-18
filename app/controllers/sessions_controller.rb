@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
 
     if user_auth
       # ユーザー情報が存在する場合はトークンを返却
-      redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}"
+      redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}", allow_other_host: true
     else
       # ユーザー情報が存在しない場合はユーザー情報を作成してトークンを返却
       user = User.create(name: 'GRASS BATTLE MEMBER', github_id: github_id_info)
@@ -26,7 +26,8 @@ class SessionsController < ApplicationController
       set_experience_points(user)
       set_contributions(user)
 
-      redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}"
+      redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}", allow_other_host: true
+
     end
   rescue StandardError => e
     # エラーが発生した場合はログを出力してエラーを返却
