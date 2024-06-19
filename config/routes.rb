@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users do
         collection do
-          get :mypage
+          get :home
         end
       end
     end
