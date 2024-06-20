@@ -1,0 +1,5 @@
+class UserSerializer < ActiveModel::Serializer
+  has_many :user_status, serializer: UserStatusSerializer
+
+  attributes :id, :name
+end

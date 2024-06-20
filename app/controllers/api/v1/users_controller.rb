@@ -1,6 +1,5 @@
 class Api::V1::UsersController < ApplicationController
   def home
-    user_status = UserStatus.find_by(user_id: @current_user.id)
-    render json: { current_user: @current_user, user_status: user_status }, status: :ok
+    render json: @current_user, status: :ok, each_serializer: UserSerializer
   end
 end
