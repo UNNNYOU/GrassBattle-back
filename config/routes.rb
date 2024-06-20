@@ -10,6 +10,7 @@ Rails.application.routes.draw do
           get :home
         end
       end
+      resources :battles, only: [:index]
     end
   end
 end

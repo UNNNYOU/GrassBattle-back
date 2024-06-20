@@ -1,7 +1,6 @@
 class Api::V1::BattlesController < ApplicationController
   def index
-    user = User.all
-    user_status = UserStatus.all
-    render json: { user: user, user_status: user_status }, status: :ok
+    @user = User.all
+    render json: @user, status: :ok, each_serializer: UserSerializer
   end
 end
