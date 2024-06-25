@@ -52,6 +52,9 @@ gem 'graphql-client' # graphqlにてデータを取得するためのgem
 # シリアライザー
 gem 'active_model_serializers' # シリアライザーを扱うためのgem
 
+# ページネーション
+gem 'kaminari' # ページネーションを行うためのgem
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
