@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_15_050926) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_26_234127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "experience_logs", force: :cascade do |t|
+    t.integer "earned_experience_points"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_experience_logs_on_user_id"
+  end
 
   create_table "user_authentications", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -42,6 +50,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_15_050926) do
     t.index ["github_id"], name: "index_users_on_github_id", unique: true
   end
 
+  add_foreign_key "experience_logs", "users"
   add_foreign_key "user_authentications", "users"
   add_foreign_key "user_statuses", "users"
 end
