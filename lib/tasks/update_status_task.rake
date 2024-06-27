@@ -98,6 +98,8 @@ namespace :update_status_task do
       # 次回の経験値の計算の際、前日のコントリビューション数を保存するためのデータ
       temporal_contributions = all_contributions - oldest_date_contributions
 
+      user.user_status.experience_logs.create!(earned_experience_points: experience_point_data)
+
       # 経験値が1以上の場合、経験値を加算する
       if experience_point_data.positive?
 

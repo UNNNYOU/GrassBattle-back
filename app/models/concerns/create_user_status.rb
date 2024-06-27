@@ -24,6 +24,7 @@ module CreateUserStatus
     # ユーザーが登録した際にプロフィールを作成
     UserStatus.create!(user_id: user.id)
 
+
     # githubに対してgraphqlリクエストを送信
     response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
                                           variables: { name: user.github_id,
@@ -50,6 +51,9 @@ module CreateUserStatus
 
     # 次回の経験値の計算の際、前日のコントリビューション数を保存するためのデータ
     temporal_contributions = all_contributions - oldest_date_contributions
+
+    # 経験値の保存
+    user.user_status.experience_logs.create!(earned_experience_points: experience_point_data)
 
     # レベルの計算
     level_data = user.user_status.level
