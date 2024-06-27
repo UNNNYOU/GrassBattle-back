@@ -1,4 +1,5 @@
 class UserStatus < ApplicationRecord
+  has_many :experience_logs
   belongs_to :user
 
   validates :level, presence: true

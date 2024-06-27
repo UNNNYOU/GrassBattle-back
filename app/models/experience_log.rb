@@ -1,3 +1,3 @@
 class ExperienceLog < ApplicationRecord
-  belongs_to :user
+  belongs_to :user_status
 end

@@ -2,8 +2,8 @@
 
 one:
   earned_experience_points: 1
-  user: one
+  user_status: one
 
 two:
   earned_experience_points: 1
-  user: two
+  user_status: two
