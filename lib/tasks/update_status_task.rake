@@ -2,7 +2,7 @@ require 'github_client'
 
 namespace :update_status_task do
   # 毎日、全ユーザーのステータスを更新する
-  desc "初期データの作成"
+  desc '初期データの作成'
   task create_status: :environment do
     User.all.each do |user|
       # ユーザーのプロフィールデータを作成
@@ -10,21 +10,21 @@ namespace :update_status_task do
 
       # githubに対してgraphqlリクエストを送信
       response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-        variables: {name: user.github_id,
-                    to: Time.current.yesterday.end_of_day.iso8601,
-                    from: Time.current.ago(30.days).beginning_of_day.iso8601})
+                                            variables: { name: user.github_id,
+                                                         to: Time.current.yesterday.end_of_day.iso8601,
+                                                         from: Time.current.ago(30.days).beginning_of_day.iso8601 })
 
       # 一番新しい日にちのコントリビューション数
-      latest_date_contributions = response.original_hash.dig("data", "user", "contributionsCollection",
-        "contributionCalendar", "weeks", -1, "contributionDays", -1, "contributionCount")
+      latest_date_contributions = response.original_hash.dig('data', 'user', 'contributionsCollection',
+                                                             'contributionCalendar', 'weeks', -1, 'contributionDays', -1, 'contributionCount')
 
       # 一番古い日にちのコントリビューション数
-      oldest_date_contributions = response.original_hash.dig("data", "user", "contributionsCollection", "contributionCalendar",
-        "weeks", 0, "contributionDays", 0, "contributionCount")
+      oldest_date_contributions = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
+                                                             'weeks', 0, 'contributionDays', 0, 'contributionCount')
 
       # 約１ヶ月分全てのコントリビューション数
-      all_contributions = response.original_hash.dig("data", "user", "contributionsCollection", "contributionCalendar",
-        "totalContributions")
+      all_contributions = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
+                                                     'totalContributions')
 
       # データがない場合にはスキップ
       next if all_contributions.blank?
@@ -45,27 +45,27 @@ namespace :update_status_task do
           level += 1
         end
         user.user_status.update!(level:, temporal_contribution_data: temporal_contributions,
-          experience_points: experience_point_data)
+                                 experience_points: experience_point_data)
       else
         user.user_status.update!(temporal_contribution_data: temporal_contributions,
-          experience_points: experience_point_data)
+                                 experience_points: experience_point_data)
       end
     end
   end
 
   # 毎日、全ユーザーのステータスを更新する
-  desc "直近１週間のコントリビューション数の取得"
+  desc '直近１週間のコントリビューション数の取得'
   task fetch_contributions: :environment do
     User.all.each do |user|
       # githubに対してgraphqlリクエストを送信
       response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-        variables: {name: user.github_id,
-                    to: Time.current.yesterday.end_of_day.iso8601,
-                    from: Time.current.ago(7.days).beginning_of_day.iso8601})
+                                            variables: { name: user.github_id,
+                                                         to: Time.current.yesterday.end_of_day.iso8601,
+                                                         from: Time.current.ago(7.days).beginning_of_day.iso8601 })
 
       # 一週間分のコントリビューション数
-      contributions = response.original_hash.dig("data", "user", "contributionsCollection", "contributionCalendar",
-        "totalContributions")
+      contributions = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
+                                                 'totalContributions')
       next if contributions.blank?
 
       # ユーザーデータの更新
@@ -73,22 +73,22 @@ namespace :update_status_task do
     end
   end
 
-  desc "毎日、全ユーザーに経験値を付与する"
+  desc '毎日、全ユーザーに経験値を付与する'
   task update_status: :environment do
     User.all.each do |user|
       # githubに対してgraphqlリクエストを送信
       response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-        variables: {name: user.github_id,
-                    to: Time.current.yesterday.end_of_day.iso8601,
-                    from: Time.current.ago(30.days).beginning_of_day.iso8601})
+                                            variables: { name: user.github_id,
+                                                         to: Time.current.yesterday.end_of_day.iso8601,
+                                                         from: Time.current.ago(30.days).beginning_of_day.iso8601 })
 
       # 一番古い日にちのコントリビューション数
-      oldest_date_contributions = response.original_hash.dig("data", "user", "contributionsCollection", "contributionCalendar",
-        "weeks", 0, "contributionDays", 0, "contributionCount")
+      oldest_date_contributions = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
+                                                             'weeks', 0, 'contributionDays', 0, 'contributionCount')
 
       # 約１ヶ月分全てのコントリビューション数
-      all_contributions = response.original_hash.dig("data", "user", "contributionsCollection", "contributionCalendar",
-        "totalContributions")
+      all_contributions = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
+                                                     'totalContributions')
 
       next if all_contributions.blank?
 
@@ -99,7 +99,7 @@ namespace :update_status_task do
       temporal_contributions = all_contributions - oldest_date_contributions
 
       # 経験値が1以上の場合、経験値を加算する
-      if experience_point_data > 0
+      if experience_point_data.positive?
 
         # ユーザーデータから経験値を取得し、加算する
         experience_point_data += user.user_status.experience_points
@@ -111,7 +111,7 @@ namespace :update_status_task do
         experience_point_data_temp = experience_point_data % 10
         level_data += (experience_point_data / 10).ceil
         user.user_status.update!(level: level_data, temporal_contribution_data: temporal_contributions,
-          experience_points: experience_point_data_temp)
+                                 experience_points: experience_point_data_temp)
       else
         user.user_status.update!(temporal_contribution_data: temporal_contributions)
       end
