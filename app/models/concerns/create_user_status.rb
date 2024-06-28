@@ -53,7 +53,7 @@ module CreateUserStatus
     temporal_contributions = all_contributions - oldest_date_contributions
 
     # 経験値の保存
-    user.user_status.experience_logs.create!(earned_experience_points: experience_point_data)
+    user.user_status.experience_histories.create!(earned_experience_points: experience_point_data)
 
     # レベルの計算
     level_data = user.user_status.level

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ExperienceLogTest < ActiveSupport::TestCase
+class ExperienceHistoryTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

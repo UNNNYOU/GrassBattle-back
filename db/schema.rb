@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_27_073035) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_28_084820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "experience_logs", force: :cascade do |t|
-    t.integer "earned_experience_points", default: 0, null: false
+  create_table "experience_histories", force: :cascade do |t|
     t.bigint "user_status_id", null: false
+    t.integer "earned_experience_points", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_status_id"], name: "index_experience_logs_on_user_status_id"
+    t.index ["user_status_id"], name: "index_experience_histories_on_user_status_id"
   end
 
   create_table "user_authentications", force: :cascade do |t|
@@ -50,7 +50,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_27_073035) do
     t.index ["github_id"], name: "index_users_on_github_id", unique: true
   end
 
-  add_foreign_key "experience_logs", "user_statuses"
+  add_foreign_key "experience_histories", "user_statuses"
   add_foreign_key "user_authentications", "users"
   add_foreign_key "user_statuses", "users"
 end
