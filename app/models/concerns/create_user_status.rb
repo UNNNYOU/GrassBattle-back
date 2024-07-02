@@ -18,6 +18,7 @@ module CreateUserStatus
       end
     end
     user.user_status.update(week_contributions: week_contribution_data)
+    user.user_status.week_contribution_histories.create!(week_contributions: week_contribution_data)
   end
 
   def set_experience_points(user)
