@@ -10,7 +10,7 @@ namespace :update_status_task do
 
       # githubに対してgraphqlリクエストを送信
       response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-                                            variables: { name: user.github_id,
+                                            variables: { name: user.github_uid,
                                                          to: Time.current.yesterday.end_of_day.iso8601,
                                                          from: Time.current.ago(30.days).beginning_of_day.iso8601 })
 
@@ -44,10 +44,10 @@ namespace :update_status_task do
           experience_point_data -= 10
           level += 1
         end
-        user.user_status.update!(level:, temporal_contribution_data: temporal_contributions,
+        user.user_status.update!(level:, contribution_diff: temporal_contributions,
                                  experience_points: experience_point_data)
       else
-        user.user_status.update!(temporal_contribution_data: temporal_contributions,
+        user.user_status.update!(contribution_diff: temporal_contributions,
                                  experience_points: experience_point_data)
       end
     end
@@ -59,7 +59,7 @@ namespace :update_status_task do
     User.all.each do |user|
       # githubに対してgraphqlリクエストを送信
       response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-                                            variables: { name: user.github_id,
+                                            variables: { name: user.github_uid,
                                                          to: Time.current.yesterday.end_of_day.iso8601,
                                                          from: Time.current.ago(7.days).beginning_of_day.iso8601 })
 
@@ -78,7 +78,7 @@ namespace :update_status_task do
     User.all.each do |user|
       # githubに対してgraphqlリクエストを送信
       response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-                                            variables: { name: user.github_id,
+                                            variables: { name: user.github_uid,
                                                          to: Time.current.yesterday.end_of_day.iso8601,
                                                          from: Time.current.ago(30.days).beginning_of_day.iso8601 })
 
@@ -93,7 +93,7 @@ namespace :update_status_task do
       next if all_contributions.blank?
 
       # 経験値の計算
-      experience_point_data = all_contributions - user.user_status.temporal_contribution_data
+      experience_point_data = all_contributions - user.user_status.contribution_diff
 
       # 次回の経験値の計算の際、前日のコントリビューション数を保存するためのデータ
       temporal_contributions = all_contributions - oldest_date_contributions
@@ -112,10 +112,10 @@ namespace :update_status_task do
         # 経験値が10以上の場合、レベルアップする
         experience_point_data_temp = experience_point_data % 10
         level_data += (experience_point_data / 10).ceil
-        user.user_status.update!(level: level_data, temporal_contribution_data: temporal_contributions,
+        user.user_status.update!(level: level_data, contribution_diff: temporal_contributions,
                                  experience_points: experience_point_data_temp)
       else
-        user.user_status.update!(temporal_contribution_data: temporal_contributions)
+        user.user_status.update!(contribution_diff: temporal_contributions)
       end
     end
   end

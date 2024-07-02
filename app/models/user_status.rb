@@ -4,5 +4,5 @@ class UserStatus < ApplicationRecord
 
   validates :level, presence: true
   validates :experience_points, presence: true
-  validates :temporal_contribution_data, presence: true
+  validates :contribution_diff, presence: true
 end
