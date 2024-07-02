@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_28_084820) do
     t.integer "level", default: 1, null: false
     t.integer "experience_points", default: 0, null: false
     t.integer "week_contributions", default: 0, null: false
-    t.integer "temporal_contribution_data", default: 0, null: false
+    t.integer "contribution_diff", default: 0, null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -44,10 +44,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_28_084820) do
 
   create_table "users", force: :cascade do |t|
     t.string "name", default: "GRASS BATTLE MEMBER", null: false
-    t.string "github_id", null: false
+    t.string "github_uid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["github_id"], name: "index_users_on_github_id", unique: true
+    t.index ["github_uid"], name: "index_users_on_github_uid", unique: true
   end
 
   add_foreign_key "experience_histories", "user_statuses"

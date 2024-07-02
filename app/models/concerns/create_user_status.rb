@@ -4,7 +4,7 @@ module CreateUserStatus
   def set_contributions(user)
     week_contribution_data = 0
     response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-                                          variables: { name: user.github_id,
+                                          variables: { name: user.github_uid,
                                                        to: Time.current.yesterday.end_of_day.iso8601,
                                                        from: Time.current.ago(7.days).beginning_of_day.iso8601 })
     contribution_week = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
@@ -27,7 +27,7 @@ module CreateUserStatus
 
     # githubに対してgraphqlリクエストを送信
     response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-                                          variables: { name: user.github_id,
+                                          variables: { name: user.github_uid,
                                                        to: Time.current.yesterday.end_of_day.iso8601,
                                                        from: Time.current.ago(30.days).beginning_of_day.iso8601 })
 
@@ -62,10 +62,10 @@ module CreateUserStatus
     if experience_point_data >= 10
       experience_point_data %= 10
       level_data += (experience_point_data / 10).ceil
-      user.user_status.update!(level: level_data, temporal_contribution_data: temporal_contributions,
+      user.user_status.update!(level: level_data, contribution_diff: temporal_contributions,
                                experience_points: experience_point_data)
     else
-      user.user_status.update!(temporal_contribution_data: temporal_contributions,
+      user.user_status.update!(contribution_diff: temporal_contributions,
                                experience_points: experience_point_data)
     end
   end
