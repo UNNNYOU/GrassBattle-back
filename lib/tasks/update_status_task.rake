@@ -70,6 +70,7 @@ namespace :update_status_task do
 
       # ユーザーデータの更新
       user.user_status.update!(week_contributions: contributions)
+      user.user_status.week_contribution_histories.create!(week_contributions: contributions)
     end
   end
 

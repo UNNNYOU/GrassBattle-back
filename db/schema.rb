@@ -52,7 +52,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_02_062212) do
 
   create_table "week_contribution_histories", force: :cascade do |t|
     t.bigint "user_status_id", null: false
-    t.integer "week_contribution", default: 0, null: false
+    t.integer "week_contributions", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_status_id"], name: "index_week_contribution_histories_on_user_status_id"
