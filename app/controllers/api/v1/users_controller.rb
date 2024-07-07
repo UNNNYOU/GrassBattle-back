@@ -23,4 +23,17 @@ class Api::V1::UsersController < ApplicationController
       week_contribution_histories: ActiveModelSerializers::SerializableResource.new(week_contribution_histories_asc, each_serializer: WeekContributionHistorySerializer)
     }, status: :ok
   end
+
+  def update
+    @current_user.update!(user_params)
+    render json: @current_user, status: :ok
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:name)
+  end
 end
