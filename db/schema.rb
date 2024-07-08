@@ -10,9 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_02_062212) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_08_041435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "avatars", force: :cascade do |t|
+    t.integer "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "experience_histories", force: :cascade do |t|
     t.bigint "user_status_id", null: false
@@ -47,6 +53,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_02_062212) do
     t.string "github_uid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "avatar_id"
+    t.index ["avatar_id"], name: "index_users_on_avatar_id"
     t.index ["github_uid"], name: "index_users_on_github_uid", unique: true
   end
 
@@ -61,5 +69,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_02_062212) do
   add_foreign_key "experience_histories", "user_statuses"
   add_foreign_key "user_authentications", "users"
   add_foreign_key "user_statuses", "users"
+  add_foreign_key "users", "avatars"
   add_foreign_key "week_contribution_histories", "user_statuses"
 end
