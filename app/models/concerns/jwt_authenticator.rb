@@ -25,13 +25,13 @@ module JwtAuthenticator
 
   # 暗号化処理
   def encode_access_token(uid_info)
-    exp_info = Time.now.to_i + 900
+    exp_info = Time.now.to_i + 12 * 3600
     payload = { uid: uid_info, exp: exp_info }
     JWT.encode(payload, ENV['JWT_SECRET_KEY'], 'HS256')
   end
 
   def encode_refresh_token(uid_info)
-    exp_info = Time.now.to_i + 24 * 3600
+    exp_info = Time.now.to_i + 7 * 24 * 3600
     payload = { uid: uid_info, exp: exp_info }
     JWT.encode(payload, ENV['JWT_SECRET_KEY'], 'HS256')
   end
