@@ -3,11 +3,15 @@ class Api::V1::UsersController < ApplicationController
     @experience_histories = @current_user.user_status.experience_histories.order(created_at: :desc).limit(30)
     @week_contribution_histories = @current_user.user_status.week_contribution_histories.order(created_at: :desc).limit(7)
     @week_contribution_histories_asc = @week_contribution_histories.reverse
+    @avatar_count = Avatar.all.count
 
     render json: {
       current_user: ActiveModelSerializers::SerializableResource.new(@current_user, serializer: UserSerializer),
-      experience_histories: ActiveModelSerializers::SerializableResource.new(@experience_histories, each_serializer: ExperienceHistorySerializer),
-      week_contribution_histories: ActiveModelSerializers::SerializableResource.new(@week_contribution_histories_asc, each_serializer: WeekContributionHistorySerializer)
+      experience_histories: ActiveModelSerializers::SerializableResource.new(@experience_histories,
+                                                                             each_serializer: ExperienceHistorySerializer),
+      week_contribution_histories: ActiveModelSerializers::SerializableResource.new(@week_contribution_histories_asc,
+                                                                                    each_serializer: WeekContributionHistorySerializer),
+      avatar_count: @avatar_count
     }, status: :ok
   end
 
@@ -19,8 +23,10 @@ class Api::V1::UsersController < ApplicationController
 
     render json: {
       user: ActiveModelSerializers::SerializableResource.new(user, serializer: UserSerializer),
-      experience_histories: ActiveModelSerializers::SerializableResource.new(experience_histories, each_serializer: ExperienceHistorySerializer),
-      week_contribution_histories: ActiveModelSerializers::SerializableResource.new(week_contribution_histories_asc, each_serializer: WeekContributionHistorySerializer)
+      experience_histories: ActiveModelSerializers::SerializableResource.new(experience_histories,
+                                                                             each_serializer: ExperienceHistorySerializer),
+      week_contribution_histories: ActiveModelSerializers::SerializableResource.new(week_contribution_histories_asc,
+                                                                                    each_serializer: WeekContributionHistorySerializer)
     }, status: :ok
   end
 
@@ -34,6 +40,6 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:name)
+    params.require(:user).permit(:name, :avatar_id)
   end
 end
