@@ -20,7 +20,7 @@ class SessionsController < ApplicationController
       redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}", allow_other_host: true
     else
       # ユーザー情報が存在しない場合はユーザー情報を作成してトークンを返却
-      user = User.create(name: 'GRASS BATTLE MEMBER', github_uid: github_uid_info, avatar_id: 1)
+      user = User.create(name: 'MEMBER', github_uid: github_uid_info, avatar_id: 1)
       UserAuthentication.create(user_id: user.id, uid: uid_info)
 
       set_experience_points(user)
