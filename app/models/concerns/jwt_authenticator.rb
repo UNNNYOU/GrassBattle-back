@@ -23,7 +23,6 @@ module JwtAuthenticator
     @current_user
   end
 
-  # 暗号化処理
   def encode_access_token(uid_info)
     exp_info = Time.now.to_i + 12 * 3600
     payload = { uid: uid_info, exp: exp_info }
@@ -36,7 +35,6 @@ module JwtAuthenticator
     JWT.encode(payload, ENV['JWT_SECRET_KEY'], 'HS256')
   end
 
-  # 復号化処理
   def decode(encoded_token)
     decoded_token = JWT.decode(encoded_token, ENV['JWT_SECRET_KEY'], true, algorithm: 'HS256')
     decoded_token.first
