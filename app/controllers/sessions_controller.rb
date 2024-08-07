@@ -18,7 +18,6 @@ class SessionsController < ApplicationController
 
       set_experience_points(user)
       set_contributions(user)
-      initial_experience_points(user)
     end
     redirect_to "#{ENV['FRONT_URL']}/auth?token=#{token_info}", allow_other_host: true
   rescue StandardError => e
