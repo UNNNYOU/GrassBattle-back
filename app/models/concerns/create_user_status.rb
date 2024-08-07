@@ -58,27 +58,4 @@ module CreateUserStatus
                                experience_points: experience_point_data)
     end
   end
-
-  def initial_experience_points(user)
-    response = GitHubClient::Client.query(Api::V1::GraphqlController::Query,
-                                          variables: { name: user.github_uid,
-                                                       to: Time.current.ago(2.days).end_of_day.iso8601,
-                                                       from: Time.new(2024, 5, 15).iso8601 })
-    all_contributions = response.original_hash.dig('data', 'user', 'contributionsCollection', 'contributionCalendar',
-                                                   'totalContributions')
-
-    return if all_contributions.blank?
-
-    experience_point_data = user.user_status.experience_points + all_contributions
-
-    level_data = user.user_status.level
-
-    if experience_point_data >= 10
-      experience_point_data %= 10
-      level_data += (all_contributions / 10).ceil
-      user.user_status.update!(level: level_data, experience_points: experience_point_data)
-    else
-      user.user_status.update(experience_points: experience_point_data)
-    end
-  end
 end
